@@ -1,0 +1,36 @@
+sudo: required
+language: go
+go:
+  - 1.9.2
+
+before_script:
+  - git config --global user.name "$NAME"
+  - git config --global user.email "$EMAIL"
+  - go get -u v2ray.com/core/...
+  - go get -u v2ray.com/ext/...
+  - sudo ntpdate -u time.google.com
+  - date
+#  - apt-get -y install jq git file p7zip-full
+  - sudo apt-get -y install p7zip-full
+  
+script:
+#  - go test -p 1 -tags json -v v2ray.com/core/...
+#  - go test -p 1 -v v2ray.com/ext/...
+  - go install v2ray.com/ext/tools/build/vbuild
+  
+after_success:
+  - mkdir $GOPATH/zipfile
+  - $GOPATH/bin/vbuild --os=windows --arch=x64 --zip 
+  - $GOPATH/bin/vbuild --os=linux --arch=x64 --zip 
+#  - $GOPATH/bin/vbuild --os=macos --arch=x64 --zip  --dir=$GOPATH/zipfile
+  - mv $GOPATH/bin/v2ray-windows-64.zip $GOPATH/bin/v2ray-linux-64.zip $GOPATH/zipfile
+  
+  - cd $GOPATH/zipfile
+  - git init
+# https://github.com/settings/tokens
+# $DEPLOY_REPO https://b8b91111111111111b7@github.com/onplus/testbuild.git
+  - git remote add origin $DEPLOY_REPO
+  - git checkout -b zip
+  - git add -A .
+  - git commit -m 'Build by Travis CI'
+  - git push --force --quiet origin zip:zip
