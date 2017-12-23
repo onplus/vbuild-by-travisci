@@ -32,5 +32,5 @@ after_success:
   - git remote add origin $DEPLOY_REPO
   - git checkout -b zip
   - git add -A .
-  - git commit -m 'Build by Travis CI'
+  - git commit -m '`$GOPATH/bin/v2ray-custom-linux-64/v2ray -version`'
   - git push --force --quiet origin zip:zip
