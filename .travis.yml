@@ -23,9 +23,11 @@ after_success:
   - $GOPATH/bin/vbuild --os=windows --arch=x64 --zip 
   - $GOPATH/bin/vbuild --os=linux --arch=x64 --zip 
 #  - $GOPATH/bin/vbuild --os=macos --arch=x64 --zip  --dir=$GOPATH/zipfile
+
   - mv $GOPATH/bin/v2ray-windows-64.zip $GOPATH/bin/v2ray-linux-64.zip $GOPATH/zipfile
-  
   - cd $GOPATH/zipfile
+  - curl -s https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt|base64 -d >gfwlist.txt
+  
   - git init
 # https://github.com/settings/tokens
 # $DEPLOY_REPO https://b8b91111111111111b7@github.com/onplus/testbuild.git
